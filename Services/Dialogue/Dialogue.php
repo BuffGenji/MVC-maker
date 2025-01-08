@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Dialog;
+namespace App\Services\Dialogue;
 
 
 
@@ -11,7 +11,7 @@ namespace App\Services\Dialog;
  * which is just to create an object of a subclass of this.
  * 
  */
-abstract class Dialog
+abstract class Dialogue
 {
 
 
@@ -34,8 +34,9 @@ abstract class Dialog
     public function isDone() {
         echo "Are you finished ? (y/n) " . PHP_EOL;
         if ($this->getNextLine() == "y") {
-            return;
+            return true;
         }
+        return false;
     }
 
 }

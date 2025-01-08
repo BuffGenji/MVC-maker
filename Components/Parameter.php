@@ -1,16 +1,11 @@
 <?php
-
 declare(strict_types=1);
-
 
 namespace App\Components;
 
-class Property
-{
-
+class Parameter {
     private string $name;
     private string $type;
-
 
     public  function __construct(array $data)
     {
@@ -27,7 +22,7 @@ class Property
             }
         }
     }
-
+    
     public function getName(): string
     {
         return $this->name;
