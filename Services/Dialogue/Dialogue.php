@@ -46,7 +46,7 @@ abstract class Dialogue
         $element = $enum_of_requirements_class_name::getQuestionsAndRequirementsFor($component);
             
         if($element == null) {
-            throw new \Exception('Trait not set');
+            throw new \Exception('Trait getDialogInformation not set');
         }
 
         $this->requirements = $element?->requirements ?? [];
