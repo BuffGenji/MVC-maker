@@ -37,13 +37,18 @@ abstract class Dialogue
         // PHP doesn't differentiate enums and objects, but we can check with these funcitons
         if (!enum_exists($enum_of_requirements_class_name)) {
             throw new InvalidArgumentException('Parameter has to be an enum');
-        }
+        
 
         // get the component name, to insert into the quesitons asked in the CLI
         $component = basename(mb_strtolower(str_replace('Requirements','',$enum_of_requirements_class_name)));
 
         // setting the class properties requirements and questions
         $element = $enum_of_requirements_class_name::getQuestionsAndRequirementsFor($component);
+            
+        if($element == null) {
+            throw new \Exception('Trait not set');
+        }
+
         $this->requirements = $element?->requirements ?? [];
         $this->questions = $element?->questions ?? [];
 
