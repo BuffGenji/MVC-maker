@@ -9,6 +9,5 @@ use App\Services\Writer\FileWriter;
 
 require '../vendor/autoload.php';
 
-
-new FileWriter(new EntityClass());
+new FileWriter(EntityClass::class);
 

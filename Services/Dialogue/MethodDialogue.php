@@ -6,41 +6,24 @@ namespace App\Services\Dialogue;
 
 use App\Components\Method;
 use App\Services\Dialogue\Dialogue;
+use App\Traits\getDialogInformation;
 use Exception;
 
 enum MethodRequirements: string
 {
+    use getDialogInformation;
     case METHOD_NAME = 'name';
     case METHOD_RETURN_TYPE = 'type';
-
-    public static function getMethodInfo()
-    {
-        $requirements = [];
-        $questions = [];
-        foreach (MethodRequirements::cases() as $requirement) {
-            $requirements[] =  $requirement->value;
-            $questions[] = "Enter the method's " . $requirement->value . " : ";
-        }
-        return (object) [
-            'requirements' => $requirements,
-            'questions' => $questions
-        ];
-    }
 }
 
 class MethodDialogue extends Dialogue
 {
     private readonly object $method;
-    private array $requirements;
-    private array $questions;
-    private array $responses;
 
     public function __construct()
-    {
-        $this->method = MethodRequirements::getMethodInfo();
-        $this->requirements = $this->method->requirements ?? [];
-        $this->questions = $this->method->questions ?? [];
-
+    {   
+        $this->method = $this->setUpDialogInformation(MethodRequirements::class);
+        
         isset($this->method)
             ? $this->responses = $this->conversationAboutMethods()
             : throw new Exception('No method requirements or questions');

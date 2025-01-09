@@ -32,31 +32,31 @@ class MethodStatementFactory
 {
 
     private BuilderFactory $factory;
-    private array $methods;
+    private ?array $methods;
+    private array $properties_for_get_and_set;
+    
     /**
      * The getters and setters option is there for added comfort when asking for elements in the EntityClass
      */
-    public function __construct(?array $methods = null, $getters_and_setters =  false, $properties_for_get_and_set = [])
+    public function __construct(?array $methods = null, $want_getters_and_setters = false, $properties_for_get_and_set = [])
     {
         $this->factory = new BuilderFactory();
-        // isset($methods) && empty($getters_and_setters)
-        //     ? $this->createMethods($methods)
-        //     : throw new Exception('No properties listed');
-        !isset($methods) && !empty($properties_for_get_and_set) && $getters_and_setters == true
-            ? $this->createGettersAndSetters($properties_for_get_and_set)
-            : throw new Exception("Problem generating getters and setters");
+        $this->methods = $methods;
+        if ($want_getters_and_setters && empty($properties_for_get_and_set)) {
+            throw new Exception('There are no properties');
+        }
+        $this->properties_for_get_and_set = $properties_for_get_and_set;
     }
 
-    // private function createMethod(Method $method): ClassMethod
-    // {
-    //     $node = $this->factory->method($method->getName())
-    //         ->makePrivate()
-    //         ->setReturnType($method->getReturnType())
-    //         ->addParam()
-    //         ->getNode();
-    //     return $node;
-    // }
-
+    public function createMethod(Method $method): ClassMethod
+    {
+        $node = $this->factory->method($method->getName())
+            ->makePrivate()
+            ->setReturnType($method->getReturnType())
+            ->addParam((new ParameterDialogue)->getParameters())
+            ->getNode();
+        return $node;
+    }
 
     private function createGetter(Property $property): ClassMethod
     {
@@ -67,9 +67,6 @@ class MethodStatementFactory
             ->getNode();
         return $node;
     }
-
-
-
 
     private function createSetter(Property $property): ClassMethod
     {
@@ -92,15 +89,16 @@ class MethodStatementFactory
 
     /**
      * The properties are in fact Property objects,
-     * this returns an array of statemenst ready to place ina a class
+     * this returns an array of statemenst ready to place in AST
      */
-    public function createGettersAndSetters(array $properties_for_get_and_set): array
+    public function createGettersAndSetters(): array
     {
-        $boilerplate_get_set = [];
-        foreach ($properties_for_get_and_set as $method) {
-            $boilerplate_get_set[] = $this->createGetter($method);
-            $boilerplate_get_set[] = $this->createSetter($method);
+        $boilerplate_get_and_set = [];
+        foreach ($this->properties_for_get_and_set as $method) {
+            $boilerplate_get_and_set[] = $this->createGetter($method);
+            $boilerplate_get_and_set[] = $this->createSetter($method);
         }
-        return $boilerplate_get_set;
+        return $boilerplate_get_and_set;
+
     }
 }

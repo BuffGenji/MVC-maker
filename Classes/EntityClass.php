@@ -22,34 +22,54 @@ class EntityClass extends MVCElement
     private object $properties;
     private array $getters_and_setters;
     private readonly string $file_name;
+    
 
     public function __construct() {
-        $this->introduction(); //  sets the file_name
+        $this->introduction(); //  sets the file_name and the mvc_element property
         $this->properties = $this->askForProperties();
-        $this->getters_and_setters = (new MethodStatementFactory(
-            properties_for_get_and_set: $this->properties->objects, 
-            getters_and_setters: true ))
-            ->createGettersAndSetters($this->properties->objects); // looks a bit ridiculous, will change later
+        $this->getters_and_setters = $this->createGettersAndSettersAutomatically();
     }
 
     public function create(): Class_
     {
-        $node = (new BuilderFactory())->class($this->file_name . "Entity")
+        $node = (new BuilderFactory())->class($this->file_name)
+            ->addStmts(
+                $this->constructor_and_hydration()
+            )
             ->addStmts(
                 $this->properties->statements
             )
             ->addStmts(
                 $this->getters_and_setters
             )
-            ->addStmts($this->constructor_and_hydration())
             ->getNode();
         return $node;
     }
 
-    private function introduction() {
-        echo "Making an Entity " . PHP_EOL;
-        echo "Enter entity name : " . PHP_EOL;
+    private function introduction() : void
+    {
+        $this->mvc_element = "Entity";
+        echo "Making an {$this->mvc_element} " . PHP_EOL;
+        echo "Enter " . mb_strtolower($this->mvc_element) . " name : " . PHP_EOL;
         $this->file_name = fgets(STDIN);
+    }
+
+    private function createGettersAndSettersAutomatically() : array
+    {
+        echo " Do you want to create getters and setters? (y/n)" . PHP_EOL;
+        if (fgets(STDIN) !== 'y') {
+            $method_factory = 
+            new MethodStatementFactory(
+                properties_for_get_and_set: $this->properties->objects, 
+                want_getters_and_setters: true 
+            );
+            return $method_factory->createGettersAndSetters(); 
+        }
+    }
+
+    public function getFileName() : string
+    {
+        return $this->file_name;
     }
 
 }

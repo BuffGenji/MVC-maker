@@ -6,41 +6,24 @@ namespace App\Services\Dialogue;
 
 use App\Components\Property;
 use App\Services\Dialogue\Dialogue;
+use App\Traits\getDialogInformation;
 use Exception;
 
 enum PropertyRequirements: string
 {
+    use getDialogInformation;
     case PROPERTY_NAME = "name";
     case PROPERTY_TYPE = "type";
 
-    public static function getPropertyInfo()
-    {
-        $requirements = [];
-        $questions = [];
-        foreach (PropertyRequirements::cases() as $requirement) {
-            $requirements[] =  $requirement->value;
-            $questions[] = "Enter the property " . $requirement->value . " : ";
-        }
-        return (object) [
-            'requirements' => $requirements,
-            'questions' => $questions
-
-        ];
-    }
 }
 
 class PropertyDialogue extends Dialogue
 {
     private readonly object $property;
-    private array $requirements;
-    private array $questions;
-    private array $responses;
 
     public function __construct()
     {
-        $this->property = PropertyRequirements::getPropertyInfo();
-        $this->requirements = $this->property->requirements ?? [];
-        $this->questions = $this->property->questions ?? [];
+        $this->property = $this->setUpDialogInformation(PropertyRequirements::class);
 
         isset($this->property)
             ? $this->responses = $this->conversationAboutProperties()

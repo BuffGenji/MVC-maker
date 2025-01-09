@@ -6,39 +6,23 @@ namespace App\Services\Dialogue;
 
 use App\Components\Parameter;
 use App\Services\Dialogue\Dialogue;
+use App\Traits\getDialogInformation;
 use Exception;
 
 enum ParameterRequirements: string
 {
+    use getDialogInformation;
     case PARAMETER_NAME = 'name';
     case PARAMETER_TYPE = 'type';
-    public static function getParameterInfo()
-    {
-        $requirements = [];
-        $questions = [];
-        foreach (ParameterRequirements::cases() as $requirement) {
-            $requirements[] =  $requirement->value;
-            $questions[] = "Enter the parameter's " . $requirement->value . " : ";
-        }
-        return (object) [
-            'requirements' => $requirements,
-            'questions' => $questions
-        ];
-    }
 }
 
 class ParameterDialogue extends Dialogue
 {
     private readonly object $parameter;
-    private array $requirements;
-    private array $questions;
-    private array $responses;
 
     public function __construct()
     {
-        $this->parameter = PropertyRequirements::getPropertyInfo();
-        $this->requirements = $this->parameter->requirements ?? [];
-        $this->questions = $this->parameter->questions ?? [];
+        $this->parameter = $this->setUpDialogInformation(ParameterRequirements::class); 
 
         isset($this->parameter)
             ? $this->responses = $this->conversationAboutParameters()

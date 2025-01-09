@@ -33,6 +33,7 @@ abstract class MVCElement {
      * 
      * @see App\Services\Factories
      */
+    protected string $mvc_element;
 
 
     public function askForProperties() : object
@@ -50,6 +51,7 @@ abstract class MVCElement {
         // . . .
         return [];
     }
+
 
 
     /**
@@ -106,5 +108,7 @@ abstract class MVCElement {
      * are actual classes. The actual writting a class to a file will be done elsewhere.
      */
     abstract public function create() : Class_;
+
+    abstract public function getFileName() : string;
 
 }
