@@ -39,7 +39,7 @@ abstract class MVCElement {
     public function askForProperties() : object
     {
         $properties = (new PropertyDialogue())->getProperties();
-        $property_statements = (new PropertyStatementFactory($properties))->getPropertiesStmt();
+        $property_statements = (new PropertyStatementFactory($properties))->getPropertyStmts();
         return (object) [
             'objects' => $properties,
             'statements' => $property_statements
@@ -111,4 +111,5 @@ abstract class MVCElement {
 
     abstract public function getFileName() : string;
 
+    
 }

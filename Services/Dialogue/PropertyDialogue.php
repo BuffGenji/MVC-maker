@@ -14,7 +14,6 @@ enum PropertyRequirements: string
     use getDialogInformation;
     case PROPERTY_NAME = "name";
     case PROPERTY_TYPE = "type";
-
 }
 
 class PropertyDialogue extends Dialogue
@@ -23,30 +22,11 @@ class PropertyDialogue extends Dialogue
 
     public function __construct()
     {
-        $this->property = $this->setUpDialogInformation(PropertyRequirements::class);
-
-        isset($this->property)
-            ? $this->responses = $this->conversationAboutProperties()
-            : throw new Exception('No property requirements or questions');
+        $this->component = PropertyRequirements::class;
+        if ($this->setUpDialogInformationFor($this->component) !== null)
+            $this->responses = $this->conversationAbout($this->component);
     }
-
-    private function conversationAboutProperties()
-    {
-        $done = false;
-        $responses = [];
-        while (!$done) {
-            $responses[] = $this->conversation(
-                requirements: $this->requirements,
-                questions: $this->questions
-            );
-            echo "Do you want to add another property? (y/n)" . PHP_EOL;
-            if ($this->getNextLine() == "n") {
-                break;
-            }
-        }
-        return $responses;
-    }
-
+    
     public function getProperties(): array
     {
         $properties = [];

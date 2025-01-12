@@ -7,7 +7,6 @@ namespace App\Services\Dialogue;
 use App\Components\Parameter;
 use App\Services\Dialogue\Dialogue;
 use App\Traits\getDialogInformation;
-use Exception;
 
 enum ParameterRequirements: string
 {
@@ -22,29 +21,9 @@ class ParameterDialogue extends Dialogue
 
     public function __construct()
     {
-        $this->parameter = $this->setUpDialogInformation(ParameterRequirements::class); 
-
-        isset($this->parameter)
-            ? $this->responses = $this->conversationAboutParameters()
-            : throw new Exception('No parameter requirements or questions');
-    }
-
-
-    private function conversationAboutParameters()
-    {
-        $done = false;
-        $responses = [];
-        while (!$done) {
-            $responses[] = $this->conversation(
-                requirements: $this->requirements,
-                questions: $this->questions
-            );
-            echo "Do you want to add another parameter? (y/n)" . PHP_EOL;
-            if ($this->getNextLine() == "n") {
-                break;
-            }
-        }
-        return $responses;
+        $this->component = ParameterRequirements::class;
+        if ($this->setUpDialogInformationFor($this->component) !== null)
+            $this->responses = $this->conversationAbout($this->component);
     }
 
     public function getParameters(): array

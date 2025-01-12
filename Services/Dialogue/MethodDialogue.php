@@ -22,28 +22,9 @@ class MethodDialogue extends Dialogue
 
     public function __construct()
     {   
-        $this->method = $this->setUpDialogInformation(MethodRequirements::class);
-        
-        isset($this->method)
-            ? $this->responses = $this->conversationAboutMethods()
-            : throw new Exception('No method requirements or questions');
-    }
-
-    private function conversationAboutMethods() : array
-    {
-        $done = false;
-        $responses = [];
-        while (!$done) {
-            $responses[] = $this->conversation(
-                requirements: $this->requirements,
-                questions: $this->questions
-            );
-            echo "Do you want to add another method? (y/n)" . PHP_EOL;
-            if ($this->getNextLine() == "n") {
-                break;
-            }
-        }
-        return $responses;
+        $this->component = MethodRequirements::class;
+        if ($this->setUpDialogInformationFor($this->component) !== null)
+            $this->responses = $this->conversationAbout($this->component);
     }
 
     public function getMethods() : array

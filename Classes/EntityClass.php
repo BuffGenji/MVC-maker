@@ -34,10 +34,10 @@ class EntityClass extends MVCElement
     {
         $node = (new BuilderFactory())->class($this->file_name)
             ->addStmts(
-                $this->constructor_and_hydration()
+                $this->properties->statements   
             )
             ->addStmts(
-                $this->properties->statements
+                $this->constructor_and_hydration()
             )
             ->addStmts(
                 $this->getters_and_setters

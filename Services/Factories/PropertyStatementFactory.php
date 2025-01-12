@@ -54,7 +54,7 @@ class PropertyStatementFactory
         return count($properties) == count($this->properties); 
     }
 
-    public function getPropertiesStmt()
+    public function getPropertyStmts()
     {
         return $this->properties;
     }
