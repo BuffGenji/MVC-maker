@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Factories;
 
 use App\Components\Property;
+use BadMethodCallException;
 use Exception;
 use PhpParser\BuilderFactory;
 use PhpParser\Node;
@@ -16,46 +17,32 @@ use PhpParser\Node\Stmt\Property as StmtProperty;
  * 
  * NOTE: All properties are set to private by default
  */
-class PropertyStatementFactory
+class PropertyStatementFactory extends AbstractStatementFactory
 {
-
-    private BuilderFactory $factory;
-    private array $properties;
 
     public function __construct(array $properties)
     {
-        $this->factory = new BuilderFactory;
-        isset($properties)
-            ? $this->createProperties($properties)
-            : throw new Exception('No properties listed');
+        $this->builder = new BuilderFactory;
+        $this->products = $this->createStatementsFor($properties);
     }
 
     /**
-     * Creates the property Statement node in the AST 
+     * Creates property statement node
      */
-    private function createProperty(Property $property) : StmtProperty
+    public function createProduct($component_object): StmtProperty
     {
-        $node = $this->factory->property($property->getName())
-            ->makePrivate()
-            ->setType($property->getType())
-            ->getNode();
-        return $node;
-    }
-
-    /**
-     * The array $properties is populated with Property objects
-     */
-    private function createProperties(array $properties) : bool
-    {
-        foreach ($properties as $property) {
-            $this->properties[] = $this->createProperty($property);
+        // object check
+        if (!($component_object instanceof Property)) {
+            throw new Exception("A Property object is expected");
         }
-        // if the funciton worked or not. so it can be used as a condition
-        return count($properties) == count($this->properties); 
-    }
 
-    public function getPropertyStmts()
-    {
-        return $this->properties;
+        // creation of node
+        $node = $this->builder
+            ->property($component_object->getName())
+            ->makePrivate()
+            ->setType($component_object->getType())
+            ->getNode();
+
+        return $node;
     }
 }

@@ -17,13 +17,14 @@ class Initialise
 
     public final function __construct()
     {
-        echo "Would you like to create a new project? (y/n)\n";
+        echo "Would you like to create a new project? (y/n)" . PHP_EOL;
         $this->getNextLine() == 'y' ?: exit;
         $sourceDir = $this->createSourceDirectory();
         $this->suggestFolders($sourceDir);
         touch($sourceDir . '/index.php');
         file_put_contents($sourceDir . '/index.php', "<?php\n\nnamespace $sourceDir;\n\n");
         Initialise::$project_dir_path = __DIR__  . "\\" . $sourceDir;
+        // file_put_contents('track.txt', Initialise::$project_dir_path);
     }
 
     public static function isInitialised(): bool

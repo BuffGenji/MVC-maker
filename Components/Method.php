@@ -13,9 +13,7 @@ namespace App\Components;
 class Method
 {
     private string $name;
-    private string $return_type;
-    private string $parameter_name;
-    private string $parameter_type;
+    private string $type;
 
 
     public  function __construct(array $data)
@@ -46,33 +44,14 @@ class Method
         $this->name = $name;
     }
 
-    public function getReturnType(): string
+    public function getType(): string
     {
-        return $this->return_type;
+        return $this->type;
     }
 
-    public function setReturnType(string $return_type): void
+    public function setType(string $return_type): void
     {
-        $this->return_type = $return_type;
+        $this->type = $return_type;
     }
 
-    public function getParameterName(): string
-    {
-        return $this->parameter_name;
     }
-
-    public function setParameterName(string $parameter_name): void
-    {
-        $this->parameter_name = $parameter_name;
-    }
-
-    public function getParameterType() : string
-    {
-        return $this->parameter_type;
-    }
-
-    public function setParameterType(string $parameter_type) : void
-    {
-        $this->parameter_type = $parameter_type;
-    }
-}

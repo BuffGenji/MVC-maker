@@ -7,7 +7,6 @@ namespace App\Services\Dialogue;
 use App\Components\Method;
 use App\Services\Dialogue\Dialogue;
 use App\Traits\getDialogInformation;
-use Exception;
 
 enum MethodRequirements: string
 {
@@ -18,8 +17,6 @@ enum MethodRequirements: string
 
 class MethodDialogue extends Dialogue
 {
-    private readonly object $method;
-
     public function __construct()
     {   
         $this->component = MethodRequirements::class;
@@ -35,9 +32,5 @@ class MethodDialogue extends Dialogue
         }
         return $methods;
     }
-    
-
-
-
 
 }

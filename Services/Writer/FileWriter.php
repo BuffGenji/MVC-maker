@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services\Writer;
 
+use App\Classes\ControllerClass;
 use App\Classes\EntityClass;
+use App\Classes\ModelClass;
 use App\Initialise;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Stmt\Class_;
@@ -17,17 +19,24 @@ use PhpParser\PrettyPrinter\Standard;
  */
 class FileWriter
 {
+    private string $namespace;
 
     public function __construct($class_to_write)
     {
-        if (!Initialise::isInitialised()) {
-            new Initialise();
-        }
-        $directory = match ($class_to_write) 
-        {
+
+        // if (empty(file_get_contents('../track.txt',true))) {
+        //     new Initialise;
+        // } else {
+        //     basename(Initialise::getSourceDirPath()) . "\\" . $directory
+        // }
+        new Initialise;
+
+        $directory = match ($class_to_write) {
             EntityClass::class => "Entities",
-            // other types of classes . . .
+            ControllerClass::class => "Controllers",
+            ModelClass::class => "Models"
         };
+
         $this->writeTo($directory, $class_to_write);
     }
 
@@ -37,7 +46,7 @@ class FileWriter
      */
     private function writeTo(string $directory, $class_to_write)
     {
-        // instantiates a specific MVCelement
+        // instantiates a specific MVCElement
         $element_to_create = new $class_to_write;
 
         // sets location of file

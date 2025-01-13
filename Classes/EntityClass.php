@@ -21,12 +21,11 @@ class EntityClass extends MVCElement
      */
     private object $properties;
     private array $getters_and_setters;
-    private readonly string $file_name;
     
-
     public function __construct() {
-        $this->introduction(); //  sets the file_name and the mvc_element property
+        $this->introduction("Entity");
         $this->properties = $this->askForProperties();
+        $apples = $this->askForMethods();
         $this->getters_and_setters = $this->createGettersAndSettersAutomatically();
     }
 
@@ -46,14 +45,6 @@ class EntityClass extends MVCElement
         return $node;
     }
 
-    private function introduction() : void
-    {
-        $this->mvc_element = "Entity";
-        echo "Making an {$this->mvc_element} " . PHP_EOL;
-        echo "Enter " . mb_strtolower($this->mvc_element) . " name : " . PHP_EOL;
-        $this->file_name = fgets(STDIN);
-    }
-
     private function createGettersAndSettersAutomatically() : array
     {
         echo " Do you want to create getters and setters? (y/n)" . PHP_EOL;
@@ -66,10 +57,4 @@ class EntityClass extends MVCElement
             return $method_factory->createGettersAndSetters(); 
         }
     }
-
-    public function getFileName() : string
-    {
-        return $this->file_name;
-    }
-
 }

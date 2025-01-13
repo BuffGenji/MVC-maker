@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Classes;
 
+use App\Services\Dialogue\MethodDialogue;
 use App\Services\Dialogue\PropertyDialogue;
+use App\Services\Factories\MethodStatementFactory;
 use App\Services\Factories\PropertyStatementFactory;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Assign;
@@ -34,25 +36,52 @@ abstract class MVCElement {
      * @see App\Services\Factories
      */
     protected string $mvc_element;
+    protected string $file_name;
+
+    
+    /**
+     * This function is to make  sure all classes can be created and when they do that they
+     * are actual classes. The actual writting a class to a file will be done elsewhere.
+     */
+    abstract public function create() : Class_;
+
+    public function getFileName() : string
+    {
+     return $this->file_name;   
+    }
+
+    /**
+     * This will be the first function run in all subclasses since it sets the essential properties 
+     * from user information that will be essential during generation : $this->file_name 
+     */
+    protected function introduction(string $mvc_element) : void
+    {
+        $this->mvc_element = $mvc_element;
+        echo "Making a/an {$this->mvc_element} " . PHP_EOL;
+        echo "Enter " . mb_strtolower($this->mvc_element) . " name : " . PHP_EOL;
+        $this->file_name = rtrim(fgets(STDIN));
+    }
 
 
     public function askForProperties() : object
     {
         $properties = (new PropertyDialogue())->getProperties();
-        $property_statements = (new PropertyStatementFactory($properties))->getPropertyStmts();
+        $property_statements = (new PropertyStatementFactory($properties))->getProducedStatements();
         return (object) [
             'objects' => $properties,
             'statements' => $property_statements
         ];
     }
 
-    public function askForMethods() : array
-    {
-        // . . .
-        return [];
+    public function askForMethods() : object
+    {            
+        $methods = (new MethodDialogue)->getMethods();
+        $method_statements = (new MethodStatementFactory($methods))->getProducedStatements();
+        return (object) [
+            'objects' => $methods,
+            'statements' => $method_statements
+        ];
     }
-
-
 
     /**
      * ChatGPT made this. it works, don't touch
@@ -103,13 +132,6 @@ abstract class MVCElement {
         return [$constructorMethod,$hydrateMethod];
     }
 
-    /**
-     * This function is to make  sure all classes can be created and when they do that they
-     * are actual classes. The actual writting a class to a file will be done elsewhere.
-     */
-    abstract public function create() : Class_;
-
-    abstract public function getFileName() : string;
 
     
 }

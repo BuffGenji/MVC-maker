@@ -17,7 +17,6 @@ enum ParameterRequirements: string
 
 class ParameterDialogue extends Dialogue
 {
-    private readonly object $parameter;
 
     public function __construct()
     {

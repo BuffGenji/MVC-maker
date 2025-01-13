@@ -18,8 +18,6 @@ enum PropertyRequirements: string
 
 class PropertyDialogue extends Dialogue
 {
-    private readonly object $property;
-
     public function __construct()
     {
         $this->component = PropertyRequirements::class;
